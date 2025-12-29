@@ -75,6 +75,7 @@ Or use an online generator: [generate-secret.vercel.app](https://generate-secret
    ```
 
 2. **Import to Vercel**:
+    Test
    - Go to [vercel.com](https://vercel.com)
    - Click "Add New Project"
    - Import your GitHub repository
