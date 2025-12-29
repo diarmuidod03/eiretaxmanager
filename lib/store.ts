@@ -68,7 +68,7 @@ export interface LifestyleCredit {
   details: Record<string, any>;
 }
 
-interface AppState {
+export interface AppState {
   hasCompletedOnboarding: boolean;
   userProfile: UserProfile;
   receipts: Receipt[];
