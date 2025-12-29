@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  taxData       TaxData?
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model TaxData {
+  id                    String   @id @default(cuid())
+  userId                 String   @unique
+  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  hasCompletedOnboarding Boolean  @default(false)
+  userProfile            String   @default("{}") // JSON string
+  receipts               String   @default("[]") // JSON string
+  remoteWorkingDays      String   @default("[]") // JSON string
+  remoteWorkingBills     String?  // JSON string
+  rentTaxCredit         String?  // JSON string
+  mortgageInterestRelief String?  // JSON string
+  smallBenefitVouchers  String   @default("[]") // JSON string
+  lifestyleCredits      String   @default("[]") // JSON string
+  estimatedRefund       Float    @default(0)
+  
+  updatedAt              DateTime @updatedAt
+  createdAt              DateTime @default(now())
+}
+
